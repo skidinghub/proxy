@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy Viewer</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .proxy-header {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+        
+        .proxy-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .back-button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        #proxyFrame {
+            width: 100%;
+            height: calc(100vh - 120px);
+            border: none;
+            background: white;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="proxy-header">
+        <div class="container">
+            <div class="proxy-controls">
+                <button class="back-button" onclick="goHome()">← Back</button>
+                <span id="currentUrl">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="loading" class="loading">
+            <p>Loading content through proxy...</p>
+        </div>
+        <iframe id="proxyFrame" style="display: none;"></iframe>
+    </div>
+
+    <script>
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        // Get URL parameter
+        function getUrlParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        const targetUrl = getUrlParam('url');
+        
+        if (targetUrl) {
+            document.getElementById('currentUrl').textContent = targetUrl;
+            
+            // Use CORS proxy service (you can replace with your own)
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/' + targetUrl;
+            
+            // Load in iframe
+            const frame = document.getElementById('proxyFrame');
+            const loading = document.getElementById('loading');
+            
+            frame.onload = function() {
+                loading.style.display = 'none';
+                frame.style.display = 'block';
+            };
+            
+            frame.src = proxyUrl;
+        } else {
+            document.getElementById('loading').innerHTML = '<p>No URL specified. <a href="index.html">Go back</a></p>';
+        }
+    </script>
+</body>
+</html>
