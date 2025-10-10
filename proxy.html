@@ -3,94 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proxy Viewer</title>
+    <title>DarkProxy - Secure Browsing</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .proxy-header {
-            background: var(--card-bg);
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 1rem;
+        .proxy-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        
+
+        .proxy-header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
         .proxy-controls {
             display: flex;
-            gap: 1rem;
             align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
-        
-        .back-button {
+
+        .url-display {
+            flex: 1;
+            min-width: 200px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .proxy-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .proxy-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .proxy-btn:hover {
             background: var(--accent-color);
             color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
         }
-        
+
+        .proxy-content {
+            flex: 1;
+            position: relative;
+        }
+
         #proxyFrame {
             width: 100%;
-            height: calc(100vh - 120px);
+            height: 100%;
             border: none;
             background: white;
         }
-        
-        .loading {
+
+        .loading, .error {
             text-align: center;
-            padding: 2rem;
+            padding: 4rem 2rem;
             color: var(--text-secondary);
+        }
+
+        .error {
+            color: var(--error-color);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .proxy-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .url-display {
+                min-width: auto;
+            }
+
+            .proxy-actions {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="proxy-header">
-        <div class="container">
-            <div class="proxy-controls">
-                <button class="back-button" onclick="goHome()">← Back</button>
-                <span id="currentUrl">Loading...</span>
+    <div class="proxy-container">
+        <header class="proxy-header">
+            <div class="container">
+                <div class="proxy-controls">
+                    <button class="proxy-btn" id="goHome" title="Go Home">
+                        <span>🏠</span>
+                        <span>Home</span>
+                    </button>
+                    
+                    <div class="url-display" id="currentUrl">
+                        Loading...
+                    </div>
+
+                    <div class="proxy-actions">
+                        <button class="proxy-btn" id="newTab" title="Open in New Tab">
+                            <span>🔗</span>
+                        </button>
+                        <button class="proxy-btn" id="refresh" title="Refresh" onclick="location.reload()">
+                            <span>🔄</span>
+                        </button>
+                        <button class="proxy-btn" onclick="copyToClipboard(window.location.href)" title="Copy URL">
+                            <span>📋</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
+        </header>
+
+        <main class="proxy-content">
+            <div id="loading" class="loading">
+                <div class="loading-spinner" style="width: 40px; height: 40px; margin: 0 auto 1rem;"></div>
+                <h3>Loading through secure proxy...</h3>
+                <p>This may take a few moments</p>
+            </div>
+
+            <div id="error" class="error hidden">
+                <h3>Unable to load page</h3>
+                <p>Please check the URL and try again</p>
+                <button onclick="window.location.href='index.html'" class="submit-btn" style="margin-top: 1rem;">
+                    Go Back Home
+                </button>
+            </div>
+
+            <iframe id="proxyFrame" class="hidden"></iframe>
+        </main>
     </div>
 
-    <div class="container">
-        <div id="loading" class="loading">
-            <p>Loading content through proxy...</p>
-        </div>
-        <iframe id="proxyFrame" style="display: none;"></iframe>
-    </div>
-
-    <script>
-        function goHome() {
-            window.location.href = 'index.html';
-        }
-
-        // Get URL parameter
-        function getUrlParam(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-
-        const targetUrl = getUrlParam('url');
-        
-        if (targetUrl) {
-            document.getElementById('currentUrl').textContent = targetUrl;
-            
-            // Use CORS proxy service (you can replace with your own)
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/' + targetUrl;
-            
-            // Load in iframe
-            const frame = document.getElementById('proxyFrame');
-            const loading = document.getElementById('loading');
-            
-            frame.onload = function() {
-                loading.style.display = 'none';
-                frame.style.display = 'block';
-            };
-            
-            frame.src = proxyUrl;
-        } else {
-            document.getElementById('loading').innerHTML = '<p>No URL specified. <a href="index.html">Go back</a></p>';
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
