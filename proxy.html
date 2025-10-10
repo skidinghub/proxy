@@ -28,6 +28,8 @@
             color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .container {
@@ -57,6 +59,7 @@
         /* Main Content */
         .main-content {
             padding: 3rem 0;
+            flex: 1;
         }
 
         /* Input Section */
@@ -155,6 +158,7 @@
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 0;
+            flex-shrink: 0;
         }
 
         .proxy-controls {
@@ -171,6 +175,7 @@
             border-radius: var(--radius);
             cursor: pointer;
             text-decoration: none;
+            display: inline-block;
         }
 
         .url-display {
@@ -202,12 +207,14 @@
 
         .proxy-content {
             flex: 1;
-            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
+        /* Full-screen iframe */
         #proxyFrame {
+            flex: 1;
             width: 100%;
-            height: 100%;
             border: none;
             background: white;
         }
@@ -216,6 +223,11 @@
             text-align: center;
             padding: 4rem 2rem;
             color: var(--text-secondary);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .error {
@@ -224,6 +236,15 @@
 
         .hidden {
             display: none;
+        }
+
+        /* Quick Access Buttons */
+        .quick-access {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
         }
 
         /* Responsive */
@@ -243,10 +264,16 @@
             .proxy-controls {
                 flex-direction: column;
                 align-items: stretch;
+                gap: 0.5rem;
             }
 
             .url-display {
                 min-width: auto;
+                order: 2;
+            }
+
+            .proxy-actions {
+                justify-content: center;
             }
         }
     </style>
@@ -270,6 +297,9 @@
                             <input type="text" id="urlInput" placeholder="https://example.com" required>
                             <button type="submit" class="submit-btn">Browse</button>
                         </form>
+                        <div class="quick-access" id="quickAccess">
+                            <!-- Quick access buttons will be added here -->
+                        </div>
                     </div>
                 </section>
 
@@ -331,25 +361,95 @@
     </div>
 
     <script>
-        // Check if we're on the proxy page or main page
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetUrl = urlParams.get('url');
+        // Quick access websites
+        const quickAccessWebsites = [
+            { name: "Google", url: "https://www.google.com" },
+            { name: "YouTube", url: "https://www.youtube.com" },
+            { name: "Wikipedia", url: "https://www.wikipedia.org" },
+            { name: "GitHub", url: "https://www.github.com" },
+            { name: "Reddit", url: "https://www.reddit.com" }
+        ];
 
-        if (targetUrl) {
-            // Show proxy page
-            document.getElementById('mainPage').classList.add('hidden');
-            document.getElementById('proxyPage').classList.remove('hidden');
-            loadProxyContent(targetUrl);
-        } else {
-            // Show main page
-            document.getElementById('mainPage').classList.remove('hidden');
-            document.getElementById('proxyPage').classList.add('hidden');
+        // Initialize the application
+        function init() {
+            // Check if we're on the proxy page or main page
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetUrl = urlParams.get('url');
+
+            if (targetUrl) {
+                // We're on a proxy page, load the content
+                showProxyPage();
+                loadProxyContent(targetUrl);
+            } else {
+                // We're on the home page, show input section
+                showMainPage();
+            }
+
+            // Initialize quick access buttons
+            initQuickAccess();
+            
+            // Set up event listeners
+            setupEventListeners();
+        }
+
+        function initQuickAccess() {
+            const quickAccessContainer = document.getElementById('quickAccess');
+            
+            quickAccessWebsites.forEach(site => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'submit-btn';
+                button.textContent = site.name;
+                button.style.padding = '0.5rem 1rem';
+                button.style.fontSize = '0.9rem';
+                button.addEventListener('click', () => {
+                    document.getElementById('urlInput').value = site.url;
+                    handleFormSubmit(site.url);
+                });
+                quickAccessContainer.appendChild(button);
+            });
+        }
+
+        function setupEventListeners() {
+            // Main page form handler
+            document.getElementById('proxyForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const urlInput = document.getElementById('urlInput');
+                let url = urlInput.value.trim();
+                
+                if (!url) return;
+                
+                // Add https:// if no protocol specified
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;
+                }
+                
+                handleFormSubmit(url);
+            });
+
+            // Proxy page event handlers
+            document.getElementById('newTab').addEventListener('click', function() {
+                const targetUrl = new URLSearchParams(window.location.search).get('url');
+                if (targetUrl) {
+                    window.open(targetUrl, '_blank');
+                }
+            });
+
+            document.getElementById('refresh').addEventListener('click', function() {
+                const targetUrl = new URLSearchParams(window.location.search).get('url');
+                if (targetUrl) {
+                    loadProxyContent(targetUrl);
+                }
+            });
         }
 
         function showMainPage() {
             document.getElementById('mainPage').classList.remove('hidden');
             document.getElementById('proxyPage').classList.add('hidden');
-            window.history.replaceState({}, '', window.location.pathname);
+            // Clear URL parameters
+            if (window.history.replaceState) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
         }
 
         function showProxyPage() {
@@ -376,6 +476,17 @@
             document.getElementById('proxyFrame').classList.remove('hidden');
         }
 
+        function handleFormSubmit(url) {
+            // Update URL to show the proxy page
+            if (window.history.pushState) {
+                const newUrl = `${window.location.pathname}?url=${encodeURIComponent(url)}`;
+                window.history.pushState({}, '', newUrl);
+            }
+            
+            showProxyPage();
+            loadProxyContent(url);
+        }
+
         function loadProxyContent(url) {
             showLoading();
             document.getElementById('currentUrl').textContent = url;
@@ -386,15 +497,12 @@
                 return;
             }
 
-            // Update the page URL without reloading
-            window.history.replaceState({}, '', `?url=${encodeURIComponent(url)}`);
-
             // Set iframe source after a short delay to show loading state
             setTimeout(() => {
                 try {
                     const frame = document.getElementById('proxyFrame');
                     
-                    // Use CORS proxy service
+                    // Use CORS proxy service that properly renders websites
                     const proxyUrl = getProxyUrl(url);
                     frame.src = proxyUrl;
                     
@@ -405,6 +513,13 @@
                     frame.onerror = () => {
                         showError('Failed to load the website. It may be blocked or unavailable.');
                     };
+                    
+                    // Additional fallback: if frame doesn't load in 10 seconds, show error
+                    setTimeout(() => {
+                        if (frame.classList.contains('hidden')) {
+                            showError('Website took too long to load. Please try again.');
+                        }
+                    }, 10000);
                 } catch (err) {
                     showError('Error loading content: ' + err.message);
                 }
@@ -421,54 +536,32 @@
         }
 
         function getProxyUrl(url) {
-            // Using CORS proxy services
+            // Using CORS proxy services that properly render websites
             const proxies = [
                 `https://corsproxy.io/?${encodeURIComponent(url)}`,
-                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
                 `https://cors-anywhere.herokuapp.com/${url}`
             ];
             
-            // Return a random proxy to distribute load
-            return proxies[Math.floor(Math.random() * proxies.length)];
+            // Return the first proxy (corsproxy.io is generally reliable)
+            return proxies[0];
         }
 
-        // Main page form handler
-        document.getElementById('proxyForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetUrl = urlParams.get('url');
             
-            const urlInput = document.getElementById('urlInput');
-            let url = urlInput.value.trim();
-            
-            if (!url) return;
-            
-            // Add https:// if no protocol specified
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
-            }
-            
-            showProxyPage();
-            loadProxyContent(url);
-        });
-
-        // Proxy page event handlers
-        document.getElementById('newTab').addEventListener('click', function() {
-            const targetUrl = new URLSearchParams(window.location.search).get('url');
             if (targetUrl) {
-                window.open(targetUrl, '_blank');
-            }
-        });
-
-        document.getElementById('refresh').addEventListener('click', function() {
-            const targetUrl = new URLSearchParams(window.location.search).get('url');
-            if (targetUrl) {
+                showProxyPage();
                 loadProxyContent(targetUrl);
+            } else {
+                showMainPage();
             }
         });
 
-        // Auto-focus URL input on main page
-        if (!targetUrl) {
-            document.getElementById('urlInput').focus();
-        }
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
