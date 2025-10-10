@@ -3,42 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkProxy | Secure Web Gateway</title>
+    <title>Dark Web Proxy</title>
     <style>
         :root {
             --bg-primary: #0d1117;
             --bg-secondary: #161b22;
-            --bg-tertiary: #21262d;
             --card-bg: #21262d;
             --text-primary: #f0f6fc;
             --text-secondary: #8b949e;
-            --text-muted: #484f58;
             --accent-color: #58a6ff;
-            --accent-hover: #388bfd;
             --border-color: #30363d;
-            --success-color: #3fb950;
-            --warning-color: #d29922;
-            --error-color: #f85149;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
             --radius: 8px;
-            --radius-lg: 12px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        [data-theme="light"] {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f6f8fa;
-            --bg-tertiary: #fafbfc;
-            --card-bg: #ffffff;
-            --text-primary: #1f2328;
-            --text-secondary: #656d76;
-            --text-muted: #8b949e;
-            --accent-color: #0969da;
-            --accent-hover: #0550ae;
-            --border-color: #d0d7de;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
         * {
@@ -48,12 +23,11 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
-            transition: var(--transition);
         }
 
         .container {
@@ -62,7 +36,7 @@
             padding: 0 1.5rem;
         }
 
-        /* Header Styles */
+        /* Header */
         .header {
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
@@ -71,12 +45,8 @@
         }
 
         .header h1 {
-            font-size: 3rem;
+            font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--accent-color), #bd93f9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .header p {
@@ -97,96 +67,42 @@
         .input-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius);
             padding: 2rem;
-            box-shadow: var(--shadow-lg);
             max-width: 800px;
             margin: 0 auto;
+            text-align: center;
         }
 
         .input-card h2 {
             margin-bottom: 1.5rem;
             font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .url-form {
-            margin-bottom: 1.5rem;
-        }
-
-        .input-group {
             display: flex;
-            gap: 0;
-            border-radius: var(--radius);
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
-
-        .input-prefix {
-            background: var(--bg-secondary);
-            padding: 1rem 1.25rem;
-            border-right: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            font-weight: 500;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
         }
 
         #urlInput {
             flex: 1;
-            padding: 1rem 1.25rem;
-            border: none;
-            background: var(--card-bg);
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            background: var(--bg-primary);
             color: var(--text-primary);
             font-size: 1rem;
-            outline: none;
-        }
-
-        #urlInput::placeholder {
-            color: var(--text-muted);
         }
 
         .submit-btn {
             background: var(--accent-color);
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
             cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            white-space: nowrap;
-        }
-
-        .submit-btn:hover {
-            background: var(--accent-hover);
-            transform: translateX(2px);
-        }
-
-        .url-suggestions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            color: var(--text-secondary);
-        }
-
-        .suggestion-btn {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.875rem;
-        }
-
-        .suggestion-btn:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
+            font-size: 1rem;
         }
 
         /* Features Section */
@@ -196,56 +112,27 @@
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .feature-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
+            border-radius: var(--radius);
+            padding: 1.5rem;
             text-align: center;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.1), transparent);
-            transition: left 0.6s;
-        }
-
-        .feature-card:hover::before {
-            left: 100%;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent-color);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
         }
 
         .feature-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
         }
 
         .feature-card p {
             color: var(--text-secondary);
-            line-height: 1.5;
         }
 
         /* Footer */
@@ -257,100 +144,7 @@
             color: var(--text-secondary);
         }
 
-        /* Theme Toggle */
-        .theme-toggle {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            width: 3rem;
-            height: 3rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: var(--transition);
-            z-index: 1000;
-        }
-
-        .theme-toggle:hover {
-            transform: rotate(15deg);
-        }
-
-        /* Quick Access */
-        .quick-access {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
-
-        .quick-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 1rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            cursor: pointer;
-            transition: var(--transition);
-            min-width: 140px;
-        }
-
-        .quick-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--accent-color);
-            box-shadow: var(--shadow);
-        }
-
-        .quick-icon {
-            font-size: 1.5rem;
-        }
-
-        /* Loading Animation */
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ffffff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 1rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: var(--success-color);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
-            transition: transform 0.3s ease;
-            z-index: 3000;
-        }
-
-        .notification.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .notification.error {
-            background: var(--error-color);
-        }
-
-        /* PROXY PAGE STYLES */
+        /* Proxy Page Styles */
         .proxy-container {
             min-height: 100vh;
             display: flex;
@@ -361,21 +155,26 @@
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
         }
 
         .proxy-controls {
             display: flex;
             align-items: center;
             gap: 1rem;
-            flex-wrap: wrap;
+        }
+
+        .home-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            text-decoration: none;
         }
 
         .url-display {
             flex: 1;
-            min-width: 200px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
@@ -396,18 +195,9 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 0.75rem 1rem;
+            padding: 0.5rem;
             cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
             color: var(--text-primary);
-        }
-
-        .proxy-btn:hover {
-            background: var(--accent-color);
-            color: white;
         }
 
         .proxy-content {
@@ -429,46 +219,25 @@
         }
 
         .error {
-            color: var(--error-color);
+            color: #f85149;
         }
 
         .hidden {
             display: none;
         }
 
-        /* Responsive Design */
+        /* Responsive */
         @media (max-width: 768px) {
-            .container {
-                padding: 0 1rem;
-            }
-
             .header h1 {
                 font-size: 2rem;
             }
 
-            .input-group {
+            .url-form {
                 flex-direction: column;
-            }
-
-            .input-prefix {
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-            }
-
-            .submit-btn {
-                justify-content: center;
             }
 
             .features-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .quick-access {
-                gap: 0.5rem;
-            }
-
-            .quick-card {
-                min-width: calc(50% - 1rem);
             }
 
             .proxy-controls {
@@ -479,97 +248,50 @@
             .url-display {
                 min-width: auto;
             }
-
-            .proxy-actions {
-                justify-content: center;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Check if we're on the proxy page -->
-    <div id="mainPage" style="display: none;">
-        <!-- Theme Toggle -->
-        <button class="theme-toggle" id="themeToggle">🌙</button>
-
-        <!-- Header -->
+    <!-- Main Page Template -->
+    <div id="mainPage">
         <header class="header">
             <div class="container">
-                <h1>DarkProxy</h1>
+                <h1>Dark Web Proxy</h1>
                 <p>Browse securely with our dark-themed proxy service</p>
-                
-                <!-- Quick Access -->
-                <div class="quick-access">
-                    <div class="quick-card" data-url="https://google.com">
-                        <div class="quick-icon">🔍</div>
-                        <span>Google</span>
-                    </div>
-                    <div class="quick-card" data-url="https://wikipedia.org">
-                        <div class="quick-icon">📚</div>
-                        <span>Wikipedia</span>
-                    </div>
-                    <div class="quick-card" data-url="https://github.com">
-                        <div class="quick-icon">💻</div>
-                        <span>GitHub</span>
-                    </div>
-                    <div class="quick-card" data-url="https://reddit.com">
-                        <div class="quick-icon">👥</div>
-                        <span>Reddit</span>
-                    </div>
-                </div>
             </div>
         </header>
 
-        <!-- Main Content -->
         <main class="main-content">
             <div class="container">
-                <!-- URL Input Section -->
                 <section class="input-section">
                     <div class="input-card">
-                        <h2>🌐 Enter URL to Browse</h2>
+                        <h2>Enter URL to Browse</h2>
                         <form id="proxyForm" class="url-form">
-                            <div class="input-group">
-                                <div class="input-prefix">https://</div>
-                                <input type="text" id="urlInput" placeholder="example.com" required>
-                                <button type="submit" class="submit-btn">
-                                    <span>Browse</span>
-                                    <span class="btn-icon">🚀</span>
-                                </button>
-                            </div>
+                            <input type="text" id="urlInput" placeholder="https://example.com" required>
+                            <button type="submit" class="submit-btn">Browse</button>
                         </form>
-                        <div class="url-suggestions">
-                            <span>Popular:</span>
-                            <button class="suggestion-btn" data-url="youtube.com">YouTube</button>
-                            <button class="suggestion-btn" data-url="twitter.com">Twitter</button>
-                            <button class="suggestion-btn" data-url="instagram.com">Instagram</button>
-                        </div>
                     </div>
                 </section>
 
-                <!-- Features Section -->
                 <section class="features-section">
                     <div class="features-grid">
                         <div class="feature-card">
-                            <div class="feature-icon">🛡️</div>
                             <h3>Secure</h3>
-                            <p>Encrypted browsing through proxy with enhanced privacy protection</p>
+                            <p>Encrypted browsing through proxy</p>
                         </div>
                         <div class="feature-card">
-                            <div class="feature-icon">🌙</div>
                             <h3>Dark Theme</h3>
-                            <p>Easy on the eyes browsing experience with multiple theme options</p>
+                            <p>Easy on the eyes browsing experience</p>
                         </div>
                         <div class="feature-card">
-                            <div class="feature-icon">⚡</div>
                             <h3>Fast</h3>
-                            <p>Optimized for GitHub Pages with multiple proxy fallbacks</p>
+                            <p>Optimized for GitHub Pages</p>
                         </div>
                     </div>
                 </section>
             </div>
         </main>
 
-        <!-- Footer -->
         <footer class="footer">
             <div class="container">
                 <p>Hosted on GitHub Pages | Dark Proxy Service</p>
@@ -577,31 +299,16 @@
         </footer>
     </div>
 
-    <!-- Proxy Page Content -->
-    <div id="proxyPage" class="proxy-container" style="display: none;">
+    <!-- Proxy Page Template -->
+    <div id="proxyPage" class="proxy-container hidden">
         <header class="proxy-header">
             <div class="container">
                 <div class="proxy-controls">
-                    <button class="proxy-btn" id="goHome" title="Go Home">
-                        <span>🏠</span>
-                        <span>Home</span>
-                    </button>
-                    
-                    <div class="url-display" id="currentUrl">
-                        Loading...
-                    </div>
-
+                    <a href="/proxy" class="home-btn">Home</a>
+                    <div class="url-display" id="currentUrl">Loading...</div>
                     <div class="proxy-actions">
-                        <button class="proxy-btn" id="newTab" title="Open in New Tab">
-                            <span>🔗</span>
-                        </button>
-                        <button class="proxy-btn" id="refresh" title="Refresh">
-                            <span>🔄</span>
-                        </button>
-                        <button class="proxy-btn" id="copyUrl" title="Copy URL">
-                            <span>📋</span>
-                        </button>
-                        <button class="theme-toggle" id="proxyThemeToggle" style="position: static; margin: 0;">🌙</button>
+                        <button class="proxy-btn" id="newTab" title="Open in New Tab">🔗</button>
+                        <button class="proxy-btn" id="refresh" title="Refresh">🔄</button>
                     </div>
                 </div>
             </div>
@@ -609,17 +316,14 @@
 
         <main class="proxy-content">
             <div id="loading" class="loading">
-                <div class="loading-spinner" style="width: 40px; height: 40px; margin: 0 auto 1rem;"></div>
                 <h3>Loading through secure proxy...</h3>
                 <p>This may take a few moments</p>
             </div>
 
             <div id="error" class="error hidden">
                 <h3>Unable to load page</h3>
-                <p>Please check the URL and try again</p>
-                <button id="goBack" class="submit-btn" style="margin-top: 1rem;">
-                    Go Back Home
-                </button>
+                <p id="errorMessage">Please check the URL and try again</p>
+                <button onclick="showMainPage()" class="submit-btn" style="margin-top: 1rem;">Go Back Home</button>
             </div>
 
             <iframe id="proxyFrame" class="hidden"></iframe>
@@ -627,296 +331,143 @@
     </div>
 
     <script>
-        // Check if we're on the main page or proxy page
-        const isProxyPage = window.location.pathname.includes('proxy.html') || window.location.search.includes('url=');
-        
-        if (isProxyPage) {
-            document.getElementById('proxyPage').style.display = 'block';
-            initProxyPage();
+        // Check if we're on the proxy page or main page
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetUrl = urlParams.get('url');
+
+        if (targetUrl) {
+            // Show proxy page
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('proxyPage').classList.remove('hidden');
+            loadProxyContent(targetUrl);
         } else {
-            document.getElementById('mainPage').style.display = 'block';
-            initMainPage();
+            // Show main page
+            document.getElementById('mainPage').classList.remove('hidden');
+            document.getElementById('proxyPage').classList.add('hidden');
         }
 
-        function initMainPage() {
-            // Theme functionality
-            function initTheme() {
-                const savedTheme = localStorage.getItem('theme') || 'dark';
-                document.documentElement.setAttribute('data-theme', savedTheme);
-                updateThemeButton(savedTheme);
+        function showMainPage() {
+            document.getElementById('mainPage').classList.remove('hidden');
+            document.getElementById('proxyPage').classList.add('hidden');
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+
+        function showProxyPage() {
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('proxyPage').classList.remove('hidden');
+        }
+
+        function showLoading() {
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('error').classList.add('hidden');
+            document.getElementById('proxyFrame').classList.add('hidden');
+        }
+
+        function showError(message) {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('error').classList.remove('hidden');
+            document.getElementById('proxyFrame').classList.add('hidden');
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        function showProxyFrame() {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('error').classList.add('hidden');
+            document.getElementById('proxyFrame').classList.remove('hidden');
+        }
+
+        function loadProxyContent(url) {
+            showLoading();
+            document.getElementById('currentUrl').textContent = url;
+
+            // Validate URL
+            if (!isValidUrl(url)) {
+                showError('Please enter a valid URL (e.g., https://example.com)');
+                return;
             }
 
-            function toggleTheme() {
-                const currentTheme = document.documentElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                updateThemeButton(newTheme);
-            }
+            // Update the page URL without reloading
+            window.history.replaceState({}, '', `?url=${encodeURIComponent(url)}`);
 
-            function updateThemeButton(theme) {
-                const btn = document.getElementById('themeToggle');
-                if (btn) btn.innerHTML = theme === 'dark' ? '🌙' : '☀️';
-            }
-
-            // Proxy form handling
-            function handleUrlSubmit(e) {
-                e.preventDefault();
-                
-                const urlInput = document.getElementById('urlInput');
-                let url = urlInput.value.trim();
-                
-                if (!url) return;
-                
-                // Add https:// if no protocol specified
-                if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                    url = 'https://' + url;
-                }
-                
-                // Validate URL
+            // Set iframe source after a short delay to show loading state
+            setTimeout(() => {
                 try {
-                    new URL(url);
-                    // Show loading state
-                    showLoading();
-                    // Navigate to proxy page
-                    setTimeout(() => {
-                        window.location.href = `?url=${encodeURIComponent(url)}`;
-                    }, 500);
+                    const frame = document.getElementById('proxyFrame');
+                    
+                    // Use CORS proxy service
+                    const proxyUrl = getProxyUrl(url);
+                    frame.src = proxyUrl;
+                    
+                    frame.onload = () => {
+                        showProxyFrame();
+                    };
+                    
+                    frame.onerror = () => {
+                        showError('Failed to load the website. It may be blocked or unavailable.');
+                    };
                 } catch (err) {
-                    showNotification('Please enter a valid URL', 'error');
-                    urlInput.focus();
+                    showError('Error loading content: ' + err.message);
                 }
-            }
-
-            // Quick access cards
-            function setupQuickAccess() {
-                document.querySelectorAll('.quick-card').forEach(card => {
-                    card.addEventListener('click', () => {
-                        const url = card.getAttribute('data-url');
-                        document.getElementById('urlInput').value = url;
-                        handleUrlSubmit(new Event('submit'));
-                    });
-                });
-            }
-
-            // URL suggestions
-            function setupUrlSuggestions() {
-                document.querySelectorAll('.suggestion-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const url = btn.getAttribute('data-url');
-                        document.getElementById('urlInput').value = url;
-                    });
-                });
-            }
-
-            // Show loading state
-            function showLoading() {
-                const btn = document.querySelector('.submit-btn');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<span class="loading-spinner"></span>';
-                btn.disabled = true;
-                
-                // Revert after navigation or timeout
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }, 2000);
-            }
-
-            // Show notification
-            function showNotification(message, type = 'success') {
-                // Remove existing notifications
-                document.querySelectorAll('.notification').forEach(notif => notif.remove());
-
-                const notification = document.createElement('div');
-                notification.className = `notification ${type}`;
-                notification.textContent = message;
-                
-                document.body.appendChild(notification);
-                
-                // Trigger animation
-                setTimeout(() => notification.classList.add('show'), 100);
-                
-                // Auto remove
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    setTimeout(() => notification.remove(), 300);
-                }, 3000);
-            }
-
-            // Initialize everything when page loads
-            document.addEventListener('DOMContentLoaded', () => {
-                initTheme();
-                
-                // Event listeners
-                document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-                document.getElementById('proxyForm').addEventListener('submit', handleUrlSubmit);
-                
-                setupQuickAccess();
-                setupUrlSuggestions();
-                
-                // Focus URL input on page load
-                document.getElementById('urlInput').focus();
-                
-                // Check if URL parameter is present (for direct proxy access)
-                const urlParams = new URLSearchParams(window.location.search);
-                const url = urlParams.get('url');
-                if (url) {
-                    document.getElementById('urlInput').value = url;
-                    handleUrlSubmit(new Event('submit'));
-                }
-            });
+            }, 500);
         }
 
-        function initProxyPage() {
-            // Theme functionality for proxy page
-            function initTheme() {
-                const savedTheme = localStorage.getItem('theme') || 'dark';
-                document.documentElement.setAttribute('data-theme', savedTheme);
-                updateThemeButton(savedTheme);
+        function isValidUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch {
+                return false;
             }
+        }
 
-            function toggleTheme() {
-                const currentTheme = document.documentElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                updateThemeButton(newTheme);
+        function getProxyUrl(url) {
+            // Using CORS proxy services
+            const proxies = [
+                `https://corsproxy.io/?${encodeURIComponent(url)}`,
+                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+                `https://cors-anywhere.herokuapp.com/${url}`
+            ];
+            
+            // Return a random proxy to distribute load
+            return proxies[Math.floor(Math.random() * proxies.length)];
+        }
+
+        // Main page form handler
+        document.getElementById('proxyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const urlInput = document.getElementById('urlInput');
+            let url = urlInput.value.trim();
+            
+            if (!url) return;
+            
+            // Add https:// if no protocol specified
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
             }
+            
+            showProxyPage();
+            loadProxyContent(url);
+        });
 
-            function updateThemeButton(theme) {
-                const btn = document.getElementById('proxyThemeToggle');
-                if (btn) btn.innerHTML = theme === 'dark' ? '🌙' : '☀️';
+        // Proxy page event handlers
+        document.getElementById('newTab').addEventListener('click', function() {
+            const targetUrl = new URLSearchParams(window.location.search).get('url');
+            if (targetUrl) {
+                window.open(targetUrl, '_blank');
             }
+        });
 
-            // Get URL parameter
-            function getUrlParam(name) {
-                const urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get(name);
+        document.getElementById('refresh').addEventListener('click', function() {
+            const targetUrl = new URLSearchParams(window.location.search).get('url');
+            if (targetUrl) {
+                loadProxyContent(targetUrl);
             }
+        });
 
-            // Proxy functionality
-            function initProxy() {
-                const targetUrl = getUrlParam('url');
-                
-                if (targetUrl) {
-                    document.getElementById('currentUrl').textContent = targetUrl;
-                    loadProxyFrame(targetUrl);
-                } else {
-                    showError('No URL specified');
-                }
-            }
-
-            function loadProxyFrame(url) {
-                const frame = document.getElementById('proxyFrame');
-                const loading = document.getElementById('loading');
-                const error = document.getElementById('error');
-
-                // Use multiple proxy services as fallback
-                const proxyServices = [
-                    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-                    `https://corsproxy.io/?${encodeURIComponent(url)}`,
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
-                ];
-
-                let currentService = 0;
-
-                const tryNextService = () => {
-                    if (currentService >= proxyServices.length) {
-                        loading.style.display = 'none';
-                        error.style.display = 'block';
-                        return;
-                    }
-
-                    frame.src = proxyServices[currentService];
-                    currentService++;
-                };
-
-                frame.onload = () => {
-                    loading.style.display = 'none';
-                    frame.classList.remove('hidden');
-                };
-
-                frame.onerror = tryNextService;
-
-                // Start with first service
-                tryNextService();
-            }
-
-            function showError(message) {
-                const error = document.getElementById('error');
-                error.style.display = 'block';
-                error.innerHTML = message;
-            }
-
-            // Event listeners for proxy page
-            function setupProxyEvents() {
-                document.getElementById('goHome').addEventListener('click', () => {
-                    window.location.href = window.location.pathname;
-                });
-
-                document.getElementById('newTab').addEventListener('click', () => {
-                    const targetUrl = getUrlParam('url');
-                    if (targetUrl) {
-                        window.open(targetUrl, '_blank');
-                    }
-                });
-
-                document.getElementById('refresh').addEventListener('click', () => {
-                    location.reload();
-                });
-
-                document.getElementById('copyUrl').addEventListener('click', () => {
-                    const targetUrl = getUrlParam('url');
-                    if (targetUrl) {
-                        navigator.clipboard.writeText(targetUrl).then(() => {
-                            showNotification('URL copied to clipboard');
-                        });
-                    }
-                });
-
-                document.getElementById('goBack').addEventListener('click', () => {
-                    window.location.href = window.location.pathname;
-                });
-
-                document.getElementById('proxyThemeToggle').addEventListener('click', toggleTheme);
-
-                // Keyboard shortcuts for proxy page
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') {
-                        window.location.href = window.location.pathname;
-                    }
-                });
-            }
-
-            function showNotification(message, type = 'success') {
-                // Remove existing notifications
-                document.querySelectorAll('.notification').forEach(notif => notif.remove());
-
-                const notification = document.createElement('div');
-                notification.className = `notification ${type}`;
-                notification.textContent = message;
-                
-                document.body.appendChild(notification);
-                
-                // Trigger animation
-                setTimeout(() => notification.classList.add('show'), 100);
-                
-                // Auto remove
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    setTimeout(() => notification.remove(), 300);
-                }, 3000);
-            }
-
-            // Initialize proxy page
-            document.addEventListener('DOMContentLoaded', () => {
-                initTheme();
-                initProxy();
-                setupProxyEvents();
-            });
+        // Auto-focus URL input on main page
+        if (!targetUrl) {
+            document.getElementById('urlInput').focus();
         }
     </script>
 </body>
